@@ -16,42 +16,42 @@ const keyLayout = [
   ['0', '0', ')', ')'],
   ['backspace', 'backspace'],
   ['language', 'language'],
-  ['q', 'й'],
-  ['w', 'ц'],
-  ['e', 'у'],
-  ['r', 'к'],
-  ['t', 'е'],
-  ['y', 'н'],
-  ['u', 'г'],
-  ['i', 'ш'],
-  ['o', 'щ'],
-  ['p', 'з'],
-  ['[', 'х', '{'],
-  [']', 'ъ', '}'],
+  ['q', 'й', 'q', 'й'],
+  ['w', 'ц', 'w', 'ц'],
+  ['e', 'у', 'e', 'у'],
+  ['r', 'к', 'r', 'к'],
+  ['t', 'е', 't', 'е'],
+  ['y', 'н', 'y', 'н'],
+  ['u', 'г', 'u', 'г'],
+  ['i', 'ш', 'i', 'ш'],
+  ['o', 'щ', 'o', 'щ'],
+  ['p', 'з', 'p', 'з'],
+  ['[', 'х', '{', 'х'],
+  [']', 'ъ', '}', 'ъ'],
   ['capsLock', 'capsLock'],
-  ['a', 'ф'],
-  ['s', 'ы'],
-  ['d', 'в'],
-  ['f', 'а'],
-  ['g', 'п'],
-  ['h', 'р'],
-  ['j', 'о'],
-  ['k', 'л'],
-  ['l', 'д'],
-  [';', 'ж'],
-  ["'", 'э'],
-  ['\\', '\\'],
+  ['a', 'ф', 'a', 'ф'],
+  ['s', 'ы', 's', 'ы'],
+  ['d', 'в', 'd', 'в'],
+  ['f', 'а', 'f', 'а'],
+  ['g', 'п', 'g', 'п'],
+  ['h', 'р', 'h', 'р'],
+  ['j', 'о', 'j', 'о'],
+  ['k', 'л', 'k', 'л'],
+  ['l', 'д', 'l', 'д'],
+  [';', 'ж', ';', 'ж'],
+  ["'", 'э', '"', 'э'],
+  ['\\', '\\', '|', '/'],
 
   ['shift', 'shift'],
-  ['z', 'я'],
-  ['x', 'ч'],
-  ['c', 'с'],
-  ['v', 'м'],
-  ['b', 'и'],
-  ['n', 'т'],
-  ['m', 'ь'],
-  [',', 'б', '<'],
-  ['.', 'ю', '>'],
+  ['z', 'я', 'z', 'я'],
+  ['x', 'ч', 'x', 'ч'],
+  ['c', 'с', 'c', 'с'],
+  ['v', 'м', 'v', 'м'],
+  ['b', 'и', 'b', 'и'],
+  ['n', 'т', 'n', 'т'],
+  ['m', 'ь', 'm', 'ь'],
+  [',', 'б', '<', 'б'],
+  ['.', 'ю', '>', 'ю'],
   ['/', '.', '?', ','],
   ['enter', 'enter'],
   ['done', 'done'],
@@ -256,12 +256,20 @@ const Keyboard = {
         case 'language':
           keyElement.classList.add('keyboard__key--wide');
           const languageElement = document.createElement('span');
-          languageElement.innerText = ' en/ru';
+          languageElement.innerText = '-en';
+          languageElement.classList.add('key-language');
 
-          //keyElement.innerHTML = createIconHTML('language');
+          keyElement.innerHTML = createIconHTML('language');
           keyElement.appendChild(languageElement);
-          keyElement.addEventListener('click', () => {
+          keyElement.addEventListener('click', (e) => {
             this._changeLanguage();
+            if (this.properties.ru) {
+              this.elements.recognition.lang = 'ru-RU';
+              e.currentTarget.lastElementChild.innerText = '-ru';
+            } else {
+              this.elements.recognition.lang = 'en-US';
+              e.currentTarget.lastElementChild.innerText = '-en';
+            }
           });
           break;
         case 'capsLock':
@@ -396,12 +404,7 @@ const Keyboard = {
             let currentValue = this.properties.value.split('');
 
             if (currentIndex >= 0) {
-              currentValue.splice(
-                currentIndex,
-                0,
-                //this._isUpperCase() ? key.toUpperCase() : key.toLowerCase()
-                keyElement.textContent
-              );
+              currentValue.splice(currentIndex, 0, keyElement.textContent);
               this.properties.value = currentValue.join('');
               this._triggerEvent('oninput', currentIndex + 1);
             }
@@ -459,8 +462,6 @@ const Keyboard = {
 
   _changeLanguage() {
     this.properties.ru = !this.properties.ru;
-    if (this.properties.ru) this.elements.recognition.lang = 'ru-RU';
-    else this.elements.recognition.lang = 'en-US';
     this._updateKeys();
   },
 

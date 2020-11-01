@@ -61,6 +61,12 @@
   width: 12%;
 }
 
+@media screen and (max-device-width: 800px) {
+  .keyboard__key--wide {
+    width: 10%;
+  }
+}
+
 .keyboard__key--extra-wide {
   width: 36%;
   max-width: 500px;
